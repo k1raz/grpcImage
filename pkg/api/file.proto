@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package api;
+
+option go_package = "grpcImage/pkg/api";
+
+service FileService {
+  // Загрузка файла
+  rpc UploadFile(stream UploadFileRequest) returns (UploadFileResponse);
+  
+  // Получение списка файлов
+  rpc ListFiles(ListFilesRequest) returns (ListFilesResponse);
+  
+  // Скачивание файла
+  rpc DownloadFile(DownloadFileRequest) returns (stream DownloadFileResponse);
+}
+
+message UploadFileRequest {
+  oneof data {
+    FileInfo info = 1;
+    bytes chunk = 2;
+  }
+}
+
+message FileInfo {
+  string filename = 1;
+}
+
+message UploadFileResponse {
+  string id = 1;
+  string filename = 2;
+  int64 size = 3;
+  string created_at = 4;
+}
+
+message ListFilesRequest {
+  // Можно добавить параметры для пагинации или фильтрации
+}
+
+message FileMetadata {
+  string id = 1;
+  string filename = 2;
+  string created_at = 3;
+  string updated_at = 4;
+}
+
+message ListFilesResponse {
+  repeated FileMetadata files = 1;
+}
+
+message DownloadFileRequest {
+  string filename = 1;
+}
+
+message DownloadFileResponse {
+  bytes chunk = 1;
+} 
